@@ -1,10 +1,17 @@
 let startTime, updatedTime, difference, tInterval;
 let running = false;
+let lapTimes = [];
+let bestLap, worstLap;
+
 const display = document.getElementById('display');
 const startStopBtn = document.getElementById('startStop');
 const resetBtn = document.getElementById('reset');
 const lapBtn = document.getElementById('lap');
 const laps = document.getElementById('laps');
+
+// Sound notification elements
+const lapSound = new Audio('lap-sound.mp3'); // add a sound file
+const resetSound = new Audio('reset-sound.mp3'); // add a sound file
 
 // Function to format time
 function timeToString(time) {
@@ -63,16 +70,54 @@ function reset() {
     startStopBtn.classList.add('start-btn');
     startStopBtn.classList.remove('reset-btn');
     laps.innerHTML = ''; // Clear laps
+    lapTimes = [];
+    bestLap = null;
+    worstLap = null;
+    resetSound.play(); // Play reset sound
 }
 
 // Record lap
 function recordLap() {
     if (running) {
-        const lapTime = timeToString(difference);
+        const lapTime = difference;
+        lapTimes.push(lapTime);
+        updateBestWorstLap(lapTime);
+
         const lapItem = document.createElement('li');
-        lapItem.textContent = lapTime;
+        lapItem.textContent = `Lap ${lapTimes.length}: ${timeToString(lapTime)}`;
+        lapItem.classList.add('lap-time');
         laps.appendChild(lapItem);
+
+        // Add best/worst lap highlighting
+        highlightBestWorstLaps();
+
+        lapSound.play(); // Play lap sound
     }
+}
+
+// Update best and worst lap times
+function updateBestWorstLap(currentLapTime) {
+    if (!bestLap || currentLapTime < bestLap) {
+        bestLap = currentLapTime;
+    }
+
+    if (!worstLap || currentLapTime > worstLap) {
+        worstLap = currentLapTime;
+    }
+}
+
+// Highlight best and worst lap times
+function highlightBestWorstLaps() {
+    const lapItems = document.querySelectorAll('.lap-time');
+    lapItems.forEach((lapItem, index) => {
+        lapItem.classList.remove('best-lap', 'worst-lap');
+        if (lapTimes[index] === bestLap) {
+            lapItem.classList.add('best-lap');
+        }
+        if (lapTimes[index] === worstLap) {
+            lapItem.classList.add('worst-lap');
+        }
+    });
 }
 
 // Event listeners
