@@ -31,6 +31,22 @@ body {
     animation: fadeIn 1s ease-in-out;
     position: relative;
 }
+/* Additional styles for best and worst laps */
+.best-lap {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.worst-lap {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Lap counter styling (optional) */
+.lap-count {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-20px); }
